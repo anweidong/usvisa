@@ -105,6 +105,9 @@ if __name__ == "__main__":
     while True:
         current_datetime = datetime.now()
         print(f"================================================= {current_datetime.strftime('%Y-%m-%d %H:%M:%S')} ===========================================")
-        run()
+        try:
+            run()
+        except Exception as e:
+            send_notification("Something is wrong", str(e), priority=-1)
         send_notification(f"Healty check {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", "Good good", priority=-2)
         time.sleep(1 * 3600)  # 1 hour
