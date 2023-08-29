@@ -3,6 +3,8 @@ from selenium.webdriver.common.by import By
 import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from datetime import datetime
+from paging import send_notification
 
 
 def run():
@@ -78,8 +80,9 @@ def run():
             if dates:
                 if current_year <= 2024:
                     print(f"{current_month} {dates} {current_year}")
-                    if current_year <= 2023:
+                    if current_year <= 2023 or (current_year == 2024 and (current_month == "January" or current_month == "Feburary")):
                         print("Found in 2023!")
+                        send_notification("Found 2023", f"{current_month} {dates} {current_year}")
                         time.sleep(60 * 60)
             
             next_button.click()
@@ -100,5 +103,8 @@ def run():
 
 if __name__ == "__main__":
     while True:
+        current_datetime = datetime.now()
+        print(f"================================================= {current_datetime.strftime('%Y-%m-%d %H:%M:%S')} ===========================================")
         run()
+        send_notification(f"Healty check {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", "Good good", priority=-2)
         time.sleep(1 * 3600)  # 1 hour
