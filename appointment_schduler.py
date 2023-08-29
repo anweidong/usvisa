@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 from paging import send_notification
+import traceback
 
 
 def run():
@@ -63,9 +64,18 @@ def run():
     # Click the "Reschedule Appointment" button
     reschedule_button.click()
 
-    # show calendar
-    calendar_field = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'appointments_consulate_appointment_date')))
-    calendar_field.click()
+    try:
+        # show calendar
+        calendar_field = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'appointments_consulate_appointment_date')))
+        calendar_field.click()
+    except Exception as e:
+        elements = driver.find_elements(By.XPATH, "//*[contains(text(), 'There are no available appointments')]")
+        for element in elements:
+            send_notification("No appointment", element.text, priority=-2)
+            break
+        if elements:
+            driver.close()
+            return
 
     def click_next_until_year(driver: webdriver.Chrome, target_year):
         while True:
@@ -108,6 +118,7 @@ if __name__ == "__main__":
         try:
             run()
         except Exception as e:
-            send_notification("Something is wrong", str(e), priority=-1)
+            exception_string = traceback.format_exc()
+            send_notification("Something is wrong", exception_string, priority=-1)
         send_notification(f"Healty check {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", "Good good", priority=-2)
-        time.sleep(1 * 3600)  # 1 hour
+        time.sleep(0.5 * 3600)  # 0.5 hour
