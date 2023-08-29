@@ -20,7 +20,7 @@ def send_notification(title: str, decription: str, priority=2):
     "application": "Python App",
     "event": title,
     "description":decription,
-    "priority": 2
+    "priority": priority
     }
     response = requests.post(url, data=data)
     print(response.text)
