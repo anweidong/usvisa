@@ -8,6 +8,9 @@ from paging import send_notification
 import traceback
 
 
+MONTH_TO_CHECK_2024 = frozenset(["January", "Feburary", "March"])
+
+
 def run():
     # Set up ChromeOptions
     options = webdriver.ChromeOptions()
@@ -91,7 +94,7 @@ def run():
             if dates:
                 if current_year <= 2024:
                     notifications.append(f"{current_month} {dates} {current_year}")
-                    if current_year <= 2023 or (current_year == 2024 and (current_month == "January" or current_month == "Feburary")):
+                    if current_year <= 2023 or (current_year == 2024 and current_month in MONTH_TO_CHECK_2024):
                         print("Found in 2023!")
                         send_notification("Found 2023", f"{current_month} {dates} {current_year}")
                         time.sleep(60 * 60)
