@@ -78,6 +78,7 @@ def run():
             return
 
     def click_next_until_year(driver: webdriver.Chrome, target_year):
+        notifications = []
         while True:
             year_element = driver.find_element(By.CSS_SELECTOR, ".ui-datepicker-year")
             current_year = int(year_element.text)
@@ -89,13 +90,15 @@ def run():
             dates = find_available_date(driver)
             if dates:
                 if current_year <= 2024:
-                    print(f"{current_month} {dates} {current_year}")
+                    notifications.append(f"{current_month} {dates} {current_year}")
                     if current_year <= 2023 or (current_year == 2024 and (current_month == "January" or current_month == "Feburary")):
                         print("Found in 2023!")
                         send_notification("Found 2023", f"{current_month} {dates} {current_year}")
                         time.sleep(60 * 60)
             
             next_button.click()
+        if notifications:
+            send_notification("Current dates", "\n".join(notifications), priority=-2)
     def find_available_date(driver: webdriver.Chrome):
         available_dates = driver.find_elements(By.CSS_SELECTOR, 'a.ui-state-default')
         result = []
