@@ -6,9 +6,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 from paging import send_notification
 import traceback
+import random
 
 
-MONTH_TO_CHECK_2024 = frozenset(["January", "Feburary", "March"])
+MONTH_TO_CHECK_2025 = frozenset(["January"])
 
 
 def run():
@@ -91,12 +92,15 @@ def run():
                 break
             next_button = driver.find_element(By.CSS_SELECTOR, ".ui-datepicker-next")
             dates = find_available_date(driver)
+            print(current_year, current_month, dates)
+            
             if dates:
-                if current_year <= 2024:
+                if current_year <= 2025:
                     notifications.append(f"{current_month} {dates} {current_year}")
-                    if current_year <= 2023 or (current_year == 2024 and current_month in MONTH_TO_CHECK_2024):
-                        print("Found in 2023!")
-                        send_notification("Found 2023", f"{current_month} {dates} {current_year}")
+                    if current_year <= 2024 or (current_year == 2025 and current_month in MONTH_TO_CHECK_2025):
+                        print("Found in 2024!")
+                        for _ in range(3):
+                            send_notification("Found 2024", f"{current_month} {dates} {current_year}")
                         time.sleep(60 * 60)
             
             next_button.click()
@@ -111,8 +115,8 @@ def run():
             if date.get_attribute('href'):
                 result.append(d)
             return result
-    click_next_until_year(driver, 2024)
-    time.sleep(60)
+    click_next_until_year(driver, 2025)
+    time.sleep(random.randint(0, 60))  # Randomly sleep 0-60 sec
 
     # Close the browser or continue with other tasks
     driver.close()
@@ -127,4 +131,4 @@ if __name__ == "__main__":
             exception_string = traceback.format_exc()
             send_notification("Something is wrong", exception_string, priority=-1)
         send_notification(f"Healty check {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", "Good good", priority=-2)
-        time.sleep(0.5 * 3600)  # 0.5 hour
+        time.sleep(60 * 10)  # 5 minutes
