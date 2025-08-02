@@ -9,7 +9,7 @@ import traceback
 import random
 
 
-MONTH_TO_CHECK_2025 = frozenset(["January"])
+MONTH_TO_CHECK_2026 = frozenset(["January", "February", "March", "April", "May"])
 
 
 def run():
@@ -95,12 +95,12 @@ def run():
             print(current_year, current_month, dates)
             
             if dates:
-                if current_year <= 2025:
+                if current_year <= 2026:
                     notifications.append(f"{current_month} {dates} {current_year}")
-                    if current_year <= 2024 or (current_year == 2025 and current_month in MONTH_TO_CHECK_2025):
-                        print("Found in 2024!")
+                    if current_year <= 2025 or (current_year == 2026 and current_month in MONTH_TO_CHECK_2026):
+                        print("Found in 2025!")
                         for _ in range(3):
-                            send_notification("Found 2024", f"{current_month} {dates} {current_year}")
+                            send_notification("Found 2025", f"{current_month} {dates} {current_year}")
                         time.sleep(60 * 60)
             
             next_button.click()
@@ -115,7 +115,7 @@ def run():
             if date.get_attribute('href'):
                 result.append(d)
             return result
-    click_next_until_year(driver, 2025)
+    click_next_until_year(driver, 2027)
     time.sleep(random.randint(0, 60))  # Randomly sleep 0-60 sec
 
     # Close the browser or continue with other tasks
@@ -129,6 +129,7 @@ if __name__ == "__main__":
             run()
         except Exception as e:
             exception_string = traceback.format_exc()
+            print(exception_string)
             send_notification("Something is wrong", exception_string, priority=-1)
         send_notification(f"Healty check {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", "Good good", priority=-2)
-        time.sleep(60 * 10)  # 5 minutes
+        time.sleep(60 * 5)  # 5 minutes
